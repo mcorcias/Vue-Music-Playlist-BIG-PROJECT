@@ -4,17 +4,40 @@
           <img src="@/assets/ninja.png">
           <h1><router-link :to="{name:'Home'}">Music Project</router-link></h1>
           <div class="links">
-              <button>Logout</button>
-              <router-link class="btn" :to="{name:'Signup'}">Signup</router-link>
-              <router-link class="btn" :to="{name:'Login'}">Log In</router-link>
+              <div v-if="user">
+                <button @click="handlClick">Logout</button>
+              </div>
+              <div v-if="!user">
+                <router-link v-if="!user" class="btn" :to="{name:'Signup'}">Signup</router-link>
+                <router-link v-if="!user" class="btn" :to="{name:'Login'}">Log In</router-link>
+              </div>
           </div>
       </nav>
   </div>
 </template>
 
 <script>
+import useLogout from '../composables/useLogout'
+import getUser from '../composables/getUser'
+import {useRouter} from 'vue-router'
 export default {
+    setup(){
+        const router = useRouter()
 
+        const {logout,isPending} = useLogout()
+        const {user}=getUser()
+
+        const handlClick = async ()=>{
+            await logout()
+            
+            //redirect
+            console.log('user logged out');
+            router.push({name:'Login'})     
+        }
+
+
+        return {handlClick,user}
+    }
 }
 </script>
 

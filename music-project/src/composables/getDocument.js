@@ -10,6 +10,8 @@ const getDocument = (collection, id) => {
 
   const unsub = documentRef.onSnapshot(
     doc => {
+      console.log(doc);
+      // need to make sure the doc exists & has data
       if (doc.data()) {
         document.value = { ...doc.data(), id: doc.id };
         error.value = null;

@@ -8,10 +8,21 @@ import PlaylistDetails from '../views/playlists/PlaylistDetails';
 // route guard
 import { projectAuth } from '../firebase/config';
 
+// if the user is not connecting
 const requireAuth = (to, from, next) => {
   let user = projectAuth.currentUser;
   if (!user) {
     next({ name: 'Login' });
+  } else {
+    next();
+  }
+};
+
+// if the user is connecting
+const requireLoggout = (to, from, next) => {
+  let user = projectAuth.currentUser;
+  if (user) {
+    next({ name: 'Home' });
   } else {
     next();
   }
@@ -28,11 +39,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    beforeEnter: requireLoggout,
   },
   {
     path: '/signup',
     name: 'Signup',
     component: Signup,
+    beforeEnter: requireLoggout,
   },
   {
     path: '/playlists/create',

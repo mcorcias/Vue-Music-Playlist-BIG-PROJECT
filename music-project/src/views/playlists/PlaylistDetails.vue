@@ -10,18 +10,20 @@
       <h2>{{ playlist.title }}</h2>
       <p class="username">Created by {{ playlist.userName }}</p>
       <p class="description">{{ playlist.description }}</p>
-      <button  @click="handleDelete">Delete Playlist</button>
+      <button v-if="ownership" @click="handleDelete">Delete Playlist</button>
     </div>
 
     <!-- song list -->
     <div class="song-list">
       <p>song list here</p>
+      <AddSong v-if="ownership" :playlist="playlist"/>
     </div>
     
   </div>
 </template>
 
 <script>
+import AddSong from '@/components/AddSong'
 import getDocument from '@/composables/getDocument'
 import getUser from '@/composables/getUser'
 import useDocument from '@/composables/useDocument'
@@ -31,6 +33,7 @@ import { useRouter } from 'vue-router'
 
 export default {
   props: ['id'],
+  components:{AddSong},
   setup(props) {
     const { error, document: playlist } = getDocument('playLists', props.id)
     const {user} = getUser()
@@ -51,7 +54,7 @@ export default {
       await deleteDoc()
       router.push({name: 'Home'})
     }
-    return { error, playlist,ownership,handleDelete }
+    return { error, playlist ,ownership, handleDelete }
   }
 }
 </script>
